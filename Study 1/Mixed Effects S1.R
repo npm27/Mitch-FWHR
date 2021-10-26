@@ -7,6 +7,7 @@ library(reshape) #data wrangling
 library(lme4) #Mixed effects models
 library(nlme) #more mixed effects models
 library(ez) #anovas
+library(car) #get p-values
 
 ##turn of scientific notation
 options(scipen = 999)
@@ -66,9 +67,36 @@ ezANOVA(dat.long,
         detailed = T)
 
 ####model time!####
-Final_model = lme(Score ~ Sex * Parenting * fwhr, 
+##Try LME model first
+model1 = lme(Score ~ Sex * Parenting * fwhr, 
+             data = dat.long,
+             method = "ML", 
+             na.action = "na.omit",
+             random = ~1|id)
+summary(model1)
+Anova(model1) #big A gets you p-values
+
+#Try lmer
+model2 = lmer(Score ~ Sex * Parenting * fwhr + (1|id),
+           data = dat.long,
+           REML = FALSE)
+summary(model2)
+Anova(model2)
+
+##Okay, I like the lmer model better syntax wise, but both return the same output. I will take that as a good sign.
+#first, fit an intercept only model
+model2.int = lmer(Score ~  + (1|id),
                   data = dat.long,
-                  method = "ML", 
-                  na.action = "na.omit",
-                  random = ~1|id)
-summary(Final_model)
+                  REML = FALSE)
+summary(model2.int)
+
+#now add the effects
+#add the between first
+model2.between = lmer(Score ~ Sex + (1|id),
+                  data = dat.long,
+                  REML = FALSE)
+summary(model2.between)
+
+##compare models (full model should have a better fit)
+anova(model2.int, model2.between, model2) #notice the little a!
+#AIC and BIC both decrease for our final model (model2) meaning that it provides the best fit to our data

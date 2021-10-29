@@ -39,15 +39,17 @@ dat.long = melt(dat[ , -c(45:48)],
 
 colnames(dat.long)[5:6] = c("Type", "Score")
 
-#now split out "type" column to get high/low and N/P
+##now split out "type" column to get high/low and N/P
+#fwhr
 dat.long$fwhr = dat.long$Type
 dat.long$fwhr = substr(dat.long$fwhr, 0, 1)
 
+#parenting
 dat.long$Type = sub('.*(?=.{2}$)', '', dat.long$Type, perl=T)
 dat.long$Type = substr(dat.long$Type, 2, 2)
-
 colnames(dat.long)[5] = "Parenting"
 
+#make score numeric
 dat.long$Score = as.numeric(dat.long$Score)
 
 ####Analyses####

@@ -33,11 +33,11 @@ dat.long$fwhr = substr(dat.long$fwhr, 0, 1)
 #PARENTING
 dat.long$Parenting = dat.long$Type
 
-dat.long$Parenting = sub('.*(?=.{2}$)', '', dat.long$Parenting, perl=T)
+dat.long$Parenting = sub('.*(?=.{2}$)', '', dat.long$Parenting, perl = T)
 dat.long$Parenting = substr(dat.long$Parenting, 1, 1)
 
 #Presentation
-dat.long$Type = sub('.*(?=.{2}$)', '', dat.long$Type, perl=T)
+dat.long$Type = sub('.*(?=.{2}$)', '', dat.long$Type, perl = T)
 dat.long$Type = substr(dat.long$Type, 2, 2)
 
 colnames(dat.long)[5] = "Presentation"

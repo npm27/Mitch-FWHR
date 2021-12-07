@@ -119,8 +119,9 @@ plot(ef1)
 
 ##Try another way of visualizing
 plot(ef1, multiline = TRUE, confint = TRUE, ci.style = "bars",
-     main = "Effect of Recipe and Temperature on Breaking Angle",
+     main = "Parenting perceptions as a function of fwhr",
      xlab = "Parenting",
      ylab = "Score")
 
 ##and let's try one more
+emmip(model2, fhwr ~ Parenting)

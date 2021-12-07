@@ -115,3 +115,9 @@ plot(e) ##Okay, this gets us the 3-way, but what about the 2-way?
 ##break down the 2-way between parenting and fwhr
 ef1 = effect(term = "Parenting * fwhr",  mod = model2)
 plot(ef1)
+
+##Try another way
+plot(ef1, multiline = TRUE, confint = TRUE, ci.style = "bars",
+     main = "Effect of Recipe and Temperature on Breaking Angle",
+     xlab = "Parenting",
+     ylab = "Score")

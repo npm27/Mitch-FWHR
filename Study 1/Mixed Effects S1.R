@@ -10,6 +10,7 @@ library(ez) #anovas
 library(car) #get p-values
 library(effects) #maybe use this for interactions?
 library(ggplot2) #plot the things!
+library(emmeans)
 
 ##turn of scientific notation
 options(scipen = 999)
@@ -116,8 +117,10 @@ plot(e) ##Okay, this gets us the 3-way, but what about the 2-way?
 ef1 = effect(term = "Parenting * fwhr",  mod = model2)
 plot(ef1)
 
-##Try another way
+##Try another way of visualizing
 plot(ef1, multiline = TRUE, confint = TRUE, ci.style = "bars",
      main = "Effect of Recipe and Temperature on Breaking Angle",
      xlab = "Parenting",
      ylab = "Score")
+
+##and let's try one more

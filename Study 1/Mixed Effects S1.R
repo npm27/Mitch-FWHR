@@ -8,6 +8,8 @@ library(lme4) #Mixed effects models
 library(nlme) #more mixed effects models
 library(ez) #anovas
 library(car) #get p-values
+library(effects) #maybe use this for interactions?
+library(ggplot2) #plot the things!
 
 ##turn of scientific notation
 options(scipen = 999)
@@ -102,3 +104,14 @@ summary(model2.between)
 ##compare models (full model should have a better fit)
 anova(model2.int, model2.between, model2) #notice the little a!
 #AIC and BIC both decrease for our final model (model2) meaning that it provides the best fit to our data
+
+####Interaction####
+e = allEffects(model2)
+e
+
+plot(e) ##Okay, this gets us the 3-way, but what about the 2-way?
+#also, 3-way not sig, but something is going on between fwhr and parenting as indicated by the 2-way
+
+##break down the 2-way between parenting and fwhr
+ef1 = effect(term = "Parenting * fwhr",  mod = model2)
+plot(ef1)

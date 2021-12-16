@@ -5,6 +5,9 @@ library(reshape)
 library(ez)
 library(lme4)
 library(car)
+library(effects) #maybe use this for interactions?
+library(ggplot2) #plot the things!
+library(emmeans)
 
 ##turn of scientific notation
 options(scipen = 999)
@@ -62,3 +65,24 @@ summary(model.mf)
 
 ##compare models
 anova(model.int, model.between, model.mf, model.final)
+
+####Interactions####
+##Parenting x fwhr
+ef1 = effect(term = "Parenting * fwhr",  mod = model.final)
+plot(ef1)
+
+##Try another way of visualizing
+plot(ef1, multiline = TRUE, confint = TRUE, ci.style = "bars",
+     main = "Parental Effectiveness as a function of Parenting Style and fWHR",
+     xlab = "Context",
+     ylab = "Score")
+
+##Parenting X Target Sex
+ef2 = effect(term = "Parenting * Target_Sex",  mod = model.final)
+plot(ef2)
+
+##Try another way of visualizing
+plot(ef2, multiline = TRUE, confint = TRUE, ci.style = "bars",
+     main = "Parental Effectiveness as a function of Parenting Style and Target Sex",
+     xlab = "Context",
+     ylab = "Score")

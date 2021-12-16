@@ -119,7 +119,7 @@ plot(ef1)
 
 ##Try another way of visualizing
 plot(ef1, multiline = TRUE, confint = TRUE, ci.style = "bars",
-     main = "Parenting perceptions as a function of fwhr",
+     main = "Parenting perceptions as a function of Parenting role and fwhr",
      xlab = "Parenting",
      ylab = "Score")
 

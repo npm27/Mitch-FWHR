@@ -5,6 +5,9 @@ library(reshape)
 library(ez)
 library(lme4)
 library(car)
+library(effects) #maybe use this for interactions?
+library(ggplot2) #plot the things!
+library(emmeans)
 
 ##turn of scientific notation
 options(scipen = 999)
@@ -80,3 +83,14 @@ summary(model.between)
 
 ##compare models (full model should have a better fit)
 anova(model.int, model.between, model.final)
+
+####Breakdown the interaction(s)####
+##break down the 2-way between parenting and fwhr
+ef1 = effect(term = "Parenting * fwhr",  mod = model.final)
+plot(ef1)
+
+##Try another way of visualizing
+plot(ef1, multiline = TRUE, confint = TRUE, ci.style = "bars",
+     main = "Parenting perceptions as a function of Parenting Role and fwhr",
+     xlab = "Parenting",
+     ylab = "Score")

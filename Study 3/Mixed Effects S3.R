@@ -5,6 +5,9 @@ library(reshape)
 library(ez)
 library(lme4)
 library(car)
+library(effects) #maybe use this for interactions?
+library(ggplot2) #plot the things!
+library(emmeans)
 
 ##turn of scientific notation
 options(scipen = 999)
@@ -91,6 +94,28 @@ pm.final = lmer(Score ~ Sex * Motive * fWHR + (1|id),
 summary(pm.final)
 Anova(pm.final)
 
+####Break down interactions####
+##SEX X MOTIVE
+##break down the 2-way between parenting and fwhr
+ef1 = effect(term = "Sex * Motive",  mod = pm.final)
+plot(ef1)
+
+##Try another way of visualizing
+plot(ef1, multiline = TRUE, confint = TRUE, ci.style = "bars",
+     main = "Parenting Motivation as a function of Sex",
+     xlab = "Sex",
+     ylab = "Score")
+
+##SEX X FWHR
+ef2 = effect(term = "Sex * fWHR",  mod = pm.final)
+plot(ef2)
+
+##Try another way of visualizing
+plot(ef2, multiline = TRUE, confint = TRUE, ci.style = "bars",
+     main = "Parental Effectiveness as a function of fWHR and Sex",
+     xlab = "Sex",
+     ylab = "Score")
+
 #intercept only model
 pm.intercept = lmer(Score ~ (1|id),
                     data = dat_scale,
@@ -141,3 +166,13 @@ mi.me = lmer(Score ~ Sex + Context + fWHR + (1|id),
 
 ##model comparisons
 anova(mi.intercept, mi.between, mi.me, mi.final) #final model again provides the best fit
+
+####INTERACTION -- CONTEXT X FWHR####
+ef3 = effect(term = "Context * fWHR",  mod = mi.final)
+plot(ef3)
+
+##Try another way of visualizing
+plot(ef3, multiline = TRUE, confint = TRUE, ci.style = "bars",
+     main = "Parental Effectiveness as a function of fWHr and Context",
+     xlab = "Context",
+     ylab = "Score")

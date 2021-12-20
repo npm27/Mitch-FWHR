@@ -13,3 +13,7 @@ options(scipen = 999)
 dat = as.data.set(spss.system.file("Study 6.sav"))
 dat = as.data.frame(dat)
 
+####Get the dataset in the correct shape####
+dat = melt(dat[ , -c(2, 34:42)], id.vars = c("id", "Sex"))
+
+##make columns for the different variables

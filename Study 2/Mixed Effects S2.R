@@ -67,7 +67,7 @@ model.final = lmer(Score ~ Sex * Parenting * fwhr * Presentation + (1|id),
               data = dat.long,
               REML = FALSE)
 summary(model.final)
-Anova(model.final)
+Anova(model.final, type = "III")
 
 #Intercept only
 model.int = lmer(Score ~  + (1|id),
@@ -99,3 +99,5 @@ plot(ef1, multiline = TRUE, confint = TRUE, ci.style = "bars",
      main = "Parenting perceptions as a function of Parenting Role and fwhr",
      xlab = "Parenting",
      ylab = "Score")
+
+####Break down the three-way interaction using simple slopes####

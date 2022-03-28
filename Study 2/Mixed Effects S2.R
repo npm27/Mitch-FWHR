@@ -82,7 +82,12 @@ model.between = lmer(Score ~ Sex + (1|id),
 summary(model.between)
 
 ##compare models (full model should have a better fit)
-anova(model.int, model.between, model.final)
+anova(model.int, model.final)
+anova(model.between, model.final)
+
+##Get BF
+bayestestR::bayesfactor_models(model.final, denominator = model.int)
+bayestestR::bayesfactor_models(model.final, denominator = model.between)
 
 ####Breakdown the interaction(s)####
 ##break down the 2-way between parenting and fwhr

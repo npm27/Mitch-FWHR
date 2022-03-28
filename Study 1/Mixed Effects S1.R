@@ -86,7 +86,8 @@ model2 = lmer(Score ~ Sex * Parenting * fwhr + (1|id),
            data = dat.long,
            REML = FALSE)
 summary(model2)
-Anova(model2)
+Anova(model2, type = "III")
+
 
 ##Okay, I like the lmer model better syntax wise, but both return the same output. I will take that as a good sign.
 #first, fit an intercept only model
@@ -94,6 +95,7 @@ model2.int = lmer(Score ~  + (1|id),
                   data = dat.long,
                   REML = FALSE)
 summary(model2.int)
+
 
 #now add the effects
 #add the between first
@@ -106,22 +108,10 @@ summary(model2.between)
 anova(model2.int, model2.between, model2) #notice the little a!
 #AIC and BIC both decrease for our final model (model2) meaning that it provides the best fit to our data
 
-####Interaction####
-e = allEffects(model2)
-e
+lmtest::lrtest(model2.between, model2)
+lmtest::lrtest(model2.int, model2)
 
-plot(e) ##Okay, this gets us the 3-way, but what about the 2-way?
-#also, 3-way not sig, but something is going on between fwhr and parenting as indicated by the 2-way
+options(scipen = 999)
 
-##break down the 2-way between parenting and fwhr
-ef1 = effect(term = "Parenting * fwhr",  mod = model2)
-plot(ef1)
-
-##Try another way of visualizing
-plot(ef1, multiline = TRUE, confint = TRUE, ci.style = "bars",
-     main = "Parenting perceptions as a function of Parenting role and fwhr",
-     xlab = "Parenting",
-     ylab = "Score")
-
-##and let's try one more
-emmip(model2, fhwr ~ Parenting)
+bayestestR::bayesfactor_models(model2, denominator = model2.between)
+bayestestR::bayesfactor_models(model2, denominator = model2.int)

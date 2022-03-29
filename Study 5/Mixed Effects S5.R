@@ -43,7 +43,19 @@ model.final = lmer(Score ~ Sex * Parenting * fwhr * Target_Sex + (1|id),
                    data = dat,
                    REML = FALSE)
 summary(model.final)
-Anova(model.final)
+Anova(model.final, type = "III")
+
+dat2 = na.omit(dat)
+
+ezANOVA(dat2,
+        wid = id,
+        between = Sex,
+        within = .(Target_Sex, Parenting, fwhr),
+        dv = Score,
+        type = 3,
+        detailed = T)
+
+tapply(dat2$Score, list(dat2$Target_Sex, dat2$Parenting), mean)
 
 ##intercept only
 model.int = lmer(Score ~ (1|id),
@@ -65,6 +77,13 @@ summary(model.mf)
 
 ##compare models
 anova(model.int, model.between, model.mf, model.final)
+anova(model.int, model.final)
+anova(model.mf, model.final)
+
+##Get BF
+bayestestR::bayesfactor_models(model.final, denominator = model.int)
+bayestestR::bayesfactor_models(model.final, denominator = model.between)
+
 
 ####Interactions####
 ##Parenting x fwhr

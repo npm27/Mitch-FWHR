@@ -32,13 +32,25 @@ colnames(dat)[4] = "Parenting"
 colnames(dat)[5] = "Score"
 dat$Score = as.numeric(dat$Score)
 
+library(ez)
+
+dat2 = na.omit(dat)
+
+ezANOVA(dat2,
+        dv = Score,
+        wid = id,
+        between = .(Sex, Condition),
+        within = .(Parenting, fwhr),
+        type = 3,
+        detailed = T)
+
 ####Run the models!####
 ##Make the final model first
 model.final = lmer(Score ~ Sex * Parenting * fwhr * Condition + (1|id),
                    data = dat,
                    REML = FALSE)
 summary(model.final)
-Anova(model.final)
+Anova(model.final, type = "III")
 
 #int only model
 model.int = lmer(Score ~  (1|id),
@@ -62,6 +74,12 @@ Anova(model.mf)
 
 ##compare models
 anova(model.int, model.between, model.mf, model.final)
+anova(model.int, model.final)
+anova(model.mf, model.final)
+
+##Get BF
+bayestestR::bayesfactor_models(model.final, denominator = model.int)
+bayestestR::bayesfactor_models(model.final, denominator = model.mf)
 
 ####Interactions####
 ##parenting X FWHR

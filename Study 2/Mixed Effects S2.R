@@ -100,4 +100,22 @@ plot(ef1, multiline = TRUE, confint = TRUE, ci.style = "bars",
      xlab = "Parenting",
      ylab = "Score")
 
-####Break down the three-way interaction using simple slopes####
+####Break down the three-way interaction
+upright = subset(dat.long,
+                 dat.long$Presentation == "U")
+inverted = subset(dat.long,
+                  dat.long$Presentation == "I")
+
+#RUN THE UPRIGHT MODEL
+model.u = lmer(Score ~ Sex * Parenting * fwhr + (1|id),
+                   data = upright,
+                   REML = FALSE)
+summary(model.u)
+Anova(model.u, type = "III")
+
+#Now the inverted model
+model.i = lmer(Score ~ Sex * Parenting * fwhr + (1|id),
+               data = inverted,
+               REML = FALSE)
+summary(model.i)
+Anova(model.i, type = "III")

@@ -39,17 +39,17 @@ dat_scale = melt(dat_scale, id.vars = c("id", "Sex"))
 dat_scale$fWHR = c(rep("High", nrow(dat_scale) / 2), rep("Low", nrow(dat_scale) / 2))
 
 #Make the motive variable
-dat_scale$variable = gsub("_2", "P", dat_scale$variable)
-dat_scale$variable = gsub("_3", "P", dat_scale$variable)
-dat_scale$variable = gsub("_4", "P", dat_scale$variable)
+dat_scale$variable = gsub("_2", "N", dat_scale$variable)
+dat_scale$variable = gsub("_3", "N", dat_scale$variable)
+dat_scale$variable = gsub("_4", "N", dat_scale$variable)
 dat_scale$variable = gsub("_5", "N", dat_scale$variable)
 dat_scale$variable = gsub("_6", "N", dat_scale$variable)
-dat_scale$variable = gsub("_7", "N", dat_scale$variable)
-dat_scale$variable = gsub("_8", "N", dat_scale$variable)
-dat_scale$variable = gsub("_9", "N", dat_scale$variable)
-dat_scale$variable = gsub("_10", "N", dat_scale$variable)
+dat_scale$variable = gsub("_7", "P", dat_scale$variable)
+dat_scale$variable = gsub("_8", "P", dat_scale$variable)
+dat_scale$variable = gsub("_9", "P", dat_scale$variable)
+dat_scale$variable = gsub("_10", "P", dat_scale$variable)
 
-dat_scale$variable = gsub("_1", "P", dat_scale$variable)
+dat_scale$variable = gsub("_1", "N", dat_scale$variable)
 
 dat_scale$variable = sub('.*(?=.$)', '',
                          dat_scale$variable,
@@ -92,7 +92,21 @@ pm.final = lmer(Score ~ Sex * Motive * fWHR + (1|id),
                 REML = F)
 
 summary(pm.final)
-Anova(pm.final)
+Anova(pm.final, type = "III")
+
+dat2 = na.omit(dat_scale)
+
+ezANOVA(dat2,
+        wid = id,
+        dv = Score,
+        between = Sex,
+        within = .(fWHR, Motive),
+        type = 3,
+        detailed = T)
+
+#sex motive interaction
+tapply(dat_scale$Score, list(dat_scale$Sex, dat_scale$Motive), mean, na.rm = T)
+tapply(dat_scale$Score, list(dat_scale$Sex, dat_scale$fWHR), mean, na.rm = T)
 
 ####Break down interactions####
 ##SEX X MOTIVE
@@ -140,6 +154,12 @@ Anova(pm.me)
 
 ##Model comparison
 anova(pm.intercept, pm.between, pm.me, pm.final) ##final model provides best fit
+anova(pm.intercept, pm.final)
+anova(pm.me, pm.final)
+
+##Get BF
+bayestestR::bayesfactor_models(pm.final, denominator = pm.intercept)
+bayestestR::bayesfactor_models(pm.final, denominator = pm.between)
 
 ##Now for the Mating interest model
 #build the final model
@@ -148,7 +168,7 @@ mi.final = lmer(Score ~ Sex * Context * fWHR + (1|id),
                 REML = F)
 
 summary(mi.final)
-Anova(mi.final)
+Anova(mi.final, type = "III")
 
 #intercept only
 mi.intercept = lmer(Score ~ (1|id),
@@ -166,6 +186,12 @@ mi.me = lmer(Score ~ Sex + Context + fWHR + (1|id),
 
 ##model comparisons
 anova(mi.intercept, mi.between, mi.me, mi.final) #final model again provides the best fit
+anova(mi.intercept, mi.final)
+anova(mi.me, mi.final)
+
+##Get BF
+bayestestR::bayesfactor_models(mi.final, denominator = mi.intercept)
+bayestestR::bayesfactor_models(mi.final, denominator = mi.between)
 
 ####INTERACTION -- CONTEXT X FWHR####
 ef3 = effect(term = "Context * fWHR",  mod = mi.final)
@@ -176,3 +202,5 @@ plot(ef3, multiline = TRUE, confint = TRUE, ci.style = "bars",
      main = "Parental Effectiveness as a function of fWHr and Context",
      xlab = "Context",
      ylab = "Score")
+
+##Need to do percieved dominance here

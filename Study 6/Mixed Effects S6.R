@@ -41,4 +41,19 @@ model.final = lmer(score ~ Sex * fwhr + Nurture_AVG + Protect_AVG + (1|id),
                    REML = FALSE)
 
 summary(model.final)
-Anova(model.final) #looks like nothing is significant
+Anova(model.final, type = "III") #looks like nothing is significant
+
+model.mf = lmer(score ~  Sex + fwhr + Nurture_AVG + Protect_AVG + (1|id),
+                   data = fwhr_long,
+                   REML = FALSE)
+
+model.int = lmer(score ~  + (1|id),
+                 data = fwhr_long,
+                 REML = FALSE)
+
+anova(model.int, model.final)
+anova(model.mf, model.final)
+
+##Get BF
+bayestestR::bayesfactor_models(model.final, denominator = model.int)
+bayestestR::bayesfactor_models(model.final, denominator = model.mf)
